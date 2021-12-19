@@ -23,8 +23,12 @@ const getProductsList: ValidatedEventAPIGatewayProxyEvent<typeof schema> =
 				statusCode: 404,
 			});
 		} catch (error) {
+			const errorMessage =
+				"Something went wrong when looking for product";
+			console.error(errorMessage, error);
+
 			return formatErrorResponse({
-				errorMessage: "Something went wrong",
+				errorMessage,
 				statusCode: 400,
 			});
 		}
