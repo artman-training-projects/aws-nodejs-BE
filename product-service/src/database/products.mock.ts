@@ -8,7 +8,7 @@ export const products: Product[] = [
 			"Метод стартапа. Предпринимательские принципы управления для долгосрочного роста компании.",
 		price: 24,
 		count: 2,
-		image: "https://source.unsplash.com/random?sig=0",
+		image: "https://source.unsplash.com/random?sig=1",
 	},
 	{
 		id: "2",
@@ -17,7 +17,7 @@ export const products: Product[] = [
 			"Одураченные случайностью. О скрытой роли шанса в бизнесе и в жизни.",
 		price: 10,
 		count: 4,
-		image: "https://source.unsplash.com/random?sig=0",
+		image: "https://source.unsplash.com/random?sig=2",
 	},
 	{
 		id: "3",
@@ -25,7 +25,7 @@ export const products: Product[] = [
 		description: "Человеческий фактор. Успешные проекты и команды.",
 		price: 23,
 		count: 1,
-		image: "https://source.unsplash.com/random?sig=0",
+		image: "https://source.unsplash.com/random?sig=3",
 	},
 	{
 		id: "4",
@@ -33,7 +33,7 @@ export const products: Product[] = [
 		description: "Поток: Психология оптимального переживания.",
 		price: 15,
 		count: 5,
-		image: "https://source.unsplash.com/random?sig=0",
+		image: "https://source.unsplash.com/random?sig=4",
 	},
 	{
 		id: "5",
@@ -41,7 +41,7 @@ export const products: Product[] = [
 		description: "На крючке. Как создавать продукты, формирующие привычки.",
 		price: 23,
 		count: 2,
-		image: "https://source.unsplash.com/random?sig=0",
+		image: "https://source.unsplash.com/random?sig=5",
 	},
 	{
 		id: "6",
@@ -49,7 +49,7 @@ export const products: Product[] = [
 		description: "К черту всё! Берись и делай!",
 		price: 15,
 		count: 3,
-		image: "https://source.unsplash.com/random?sig=0",
+		image: "https://source.unsplash.com/random?sig=6",
 	},
 	{
 		id: "7",
@@ -57,7 +57,7 @@ export const products: Product[] = [
 		description: "Черный лебедь. Под знаком непредсказуемости.",
 		price: 23,
 		count: 5,
-		image: "https://source.unsplash.com/random?sig=0",
+		image: "https://source.unsplash.com/random?sig=7",
 	},
 	{
 		id: "8",
@@ -66,6 +66,6 @@ export const products: Product[] = [
 			"Гибкое сознание. Новый взгляд на психологию развития взрослых и детей.",
 		price: 15,
 		count: 4,
-		image: "https://source.unsplash.com/random?sig=0",
+		image: "https://source.unsplash.com/random?sig=8",
 	},
 ];
