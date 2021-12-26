@@ -12,9 +12,7 @@ const getProductsList: ValidatedEventAPIGatewayProxyEvent<typeof schema> =
 
 			if (allProducts) {
 				return formatJSONResponse({
-					data: {
-						allProducts,
-					},
+					data: allProducts,
 				});
 			}
 
