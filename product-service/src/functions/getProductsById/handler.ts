@@ -14,9 +14,7 @@ const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof schema> =
 
 			if (product) {
 				return formatJSONResponse({
-					data: {
-						product,
-					},
+					data: product,
 				});
 			}
 
@@ -30,7 +28,7 @@ const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof schema> =
 
 			return formatErrorResponse({
 				errorMessage,
-				statusCode: 400,
+				statusCode: 500,
 			});
 		}
 	};
