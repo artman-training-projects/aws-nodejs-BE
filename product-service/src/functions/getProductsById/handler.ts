@@ -2,19 +2,24 @@ import { formatJSONResponse, formatErrorResponse } from "@libs/apiGateway";
 import { middyfy } from "@libs/lambda";
 import { ValidatedEventAPIGatewayProxyEvent } from "@libs/types";
 
-import { getProductById } from "src/database";
+import { client } from "src/database/client";
 import schema from "../schema";
 
 const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof schema> =
 	async (event) => {
 		const { productId } = event.pathParameters;
+		await client.connect();
 
 		try {
-			const product = await getProductById(productId);
+			const product = await client.query(
+				`SELECT product.id, product.title, product.description, product.price, stock.count
+				FROM product, stock
+					WHERE product.id='${productId}' AND product.id = stock.product_id`
+			);
 
 			if (product) {
 				return formatJSONResponse({
-					data: product,
+					data: product.rows,
 				});
 			}
 
@@ -30,6 +35,8 @@ const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof schema> =
 				errorMessage,
 				statusCode: 500,
 			});
+		} finally {
+			client.end();
 		}
 	};
 
