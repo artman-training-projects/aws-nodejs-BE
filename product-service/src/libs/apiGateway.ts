@@ -8,7 +8,7 @@ export const formatJSONResponse = (response: Response) => {
 			"Access-Control-Allow-Headers": "*",
 			"Access-Control-Allow-Origin": "*",
 		},
-		body: JSON.stringify(response.data),
+		body: JSON.stringify(response.data, null, 2),
 	};
 };
 
@@ -18,6 +18,6 @@ export const formatErrorResponse = ({
 }: ErrorResponse) => {
 	return {
 		statusCode,
-		body: JSON.stringify(errorMessage),
+		body: errorMessage,
 	};
 };

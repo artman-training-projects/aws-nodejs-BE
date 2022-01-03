@@ -5,6 +5,8 @@ import { middyfy } from "@libs/lambda";
 import { HandlerType } from "src/types";
 import { DB_Config } from "src/database/config";
 
+import { validateProduct } from "./product.model";
+
 const addProduct: HandlerType<{
 	body: {
 		title: string;
@@ -14,6 +16,21 @@ const addProduct: HandlerType<{
 	};
 }> = async (event) => {
 	const { title, description, price, count } = event.body;
+
+	const productErrors = await validateProduct({
+		title,
+		description,
+		price,
+		count,
+	});
+
+	if (productErrors) {
+		console.error(productErrors);
+		return formatErrorResponse({
+			errorMessage: productErrors,
+			statusCode: 400,
+		});
+	}
 
 	const client = new Client(DB_Config);
 	await client.connect();
@@ -36,13 +53,13 @@ const addProduct: HandlerType<{
 			RETURNING count`
 		);
 
-		await client.query("COMMIT;");
+		await client.query("ROLLBACK;");
 		return formatJSONResponse({
 			data: { ...product, ...stock },
 		});
 	} catch (error) {
 		await client.query("ROLLBACK;");
-		const errorMessage = `Something went wrong when adding new product`;
+		const errorMessage = `Something went wrong with DB, rollback transaction`;
 		console.error(errorMessage, error);
 
 		return formatErrorResponse({
