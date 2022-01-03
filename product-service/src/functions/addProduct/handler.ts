@@ -1,36 +1,16 @@
 import { Client } from "pg";
 import { formatJSONResponse, formatErrorResponse } from "@libs/apiGateway";
 import { middyfy } from "@libs/lambda";
+import type { FromSchema } from "json-schema-to-ts";
 
 import { HandlerType } from "src/types";
 import { DB_Config } from "src/database/config";
+import { inputSchema } from "./schema";
 
-import { validateProduct } from "./product.model";
-
-const addProduct: HandlerType<{
-	body: {
-		title: string;
-		description: string;
-		price: number;
-		count: number;
-	};
-}> = async (event) => {
+const addProduct: HandlerType<FromSchema<typeof inputSchema>> = async (
+	event
+) => {
 	const { title, description, price, count } = event.body;
-
-	const productErrors = await validateProduct({
-		title,
-		description,
-		price,
-		count,
-	});
-
-	if (productErrors) {
-		console.error(productErrors);
-		return formatErrorResponse({
-			errorMessage: productErrors,
-			statusCode: 400,
-		});
-	}
 
 	const client = new Client(DB_Config);
 	await client.connect();
@@ -71,4 +51,4 @@ const addProduct: HandlerType<{
 	}
 };
 
-export const main = middyfy(addProduct);
+export const main = middyfy(addProduct, inputSchema);
