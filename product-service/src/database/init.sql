@@ -1,9 +1,9 @@
-create extension if not exists "uuid-ossp";
+CREATE extension IF NOT EXISTS "uuid-ossp";
 
-drop table if exists stock;
-drop table if exists product;
+DROP TABLE IF EXISTS stock;
+DROP TABLE IF EXISTS product;
 
-create table product (
+CREATE TABLE product (
 	id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     title text NOT NULL,
     description text,
@@ -16,7 +16,7 @@ CREATE TABLE stocks (
     foreign key ("product_id") references "product" ("id")
 );
 
-insert into product (title, description, price) values
+INSERT INTO product (title, description, price) VALUES
 	('Метод стартапа', 'Метод стартапа. Предпринимательские принципы управления для долгосрочного роста компании.', 24),
 	('Одураченные случайностью', 'Одураченные случайностью. О скрытой роли шанса в бизнесе и в жизни.', 10),
 	('Человеческий фактор', 'Человеческий фактор. Успешные проекты и команды.', 23),
@@ -26,7 +26,7 @@ insert into product (title, description, price) values
 	('Черный лебедь', 'Черный лебедь. Под знаком непредсказуемости.', 23),
 	('Гибкое сознание', 'Гибкое сознание. Новый взгляд на психологию развития взрослых и детей.', 15)
 
-INSERT into stock (product_id, count) values
+INSERT INTO stock (product_id, count) VALUES
 	('bfc79d2f-81f3-4eea-bfc3-cd111d8664df', 4),
 	('44d41530-63ac-4257-a7bc-baaa42b32685', 2),
 	('f78bb364-e4b4-484d-88cb-a4cc2911bd98', 5),

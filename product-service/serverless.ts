@@ -1,8 +1,6 @@
 import type { AWS } from "@serverless/typescript";
 
-import getProductsList from "@functions/getProductsList";
-import getProductsById from "@functions/getProductsById";
-
+import { getProductsList, getProductsById, addProduct } from "@functions/index";
 import { mainEnv, databaseEnv } from "../.env";
 
 const environment = { ...mainEnv, ...databaseEnv };
@@ -10,7 +8,6 @@ const environment = { ...mainEnv, ...databaseEnv };
 const serverlessConfiguration: AWS = {
 	service: "product-service",
 	frameworkVersion: "2",
-	useDotenv: true,
 	plugins: ["serverless-esbuild"],
 	provider: {
 		name: "aws",
@@ -24,7 +21,7 @@ const serverlessConfiguration: AWS = {
 		lambdaHashingVersion: "20201221",
 	},
 	// import the function via paths
-	functions: { getProductsList, getProductsById },
+	functions: { getProductsList, getProductsById, addProduct },
 	package: { individually: true },
 	custom: {
 		esbuild: {

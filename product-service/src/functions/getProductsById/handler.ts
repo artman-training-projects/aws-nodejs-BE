@@ -18,8 +18,9 @@ const getProductsById: HandlerType<{
 	try {
 		const { rows: product } = await client.query(
 			`SELECT product.id, product.title, product.description, product.price, stock.count
-				FROM product, stock
-					WHERE product.id='${productId}' AND product.id = stock.product_id`
+			FROM product, stock
+			WHERE product.id=$1 AND product.id = stock.product_id`,
+			[productId]
 		);
 
 		if (product) {
