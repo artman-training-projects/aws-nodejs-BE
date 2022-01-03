@@ -1,15 +1,19 @@
 import middy from "@middy/core";
 import cors from "@middy/http-cors";
-import middyJsonBodyParser from "@middy/http-json-body-parser";
-import { logger } from "./middleware/logger";
+import httpErrorHandler from "@middy/http-error-handler";
+import JsonBodyParser from "@middy/http-json-body-parser";
 
-export const middyfy = (handler) => {
+import { logger, validator } from "./middleware";
+
+export const middyfy = (handler, inputSchema = undefined) => {
 	return middy(handler)
 		.use(logger())
-		.use(middyJsonBodyParser())
+		.use(JsonBodyParser())
+		.use(validator(inputSchema))
 		.use(
 			cors({
 				credentials: true,
 			})
-		);
+		)
+		.use(httpErrorHandler());
 };

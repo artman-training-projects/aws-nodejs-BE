@@ -1,22 +1,24 @@
 import { Client } from "pg";
 import { formatJSONResponse, formatErrorResponse } from "@libs/apiGateway";
 import { middyfy } from "@libs/lambda";
+import type { FromSchema } from "json-schema-to-ts";
 
 import { HandlerType } from "src/types";
 import { DB_Config } from "src/database/config";
+import { inputSchema } from "./schema";
 
-const getProductsById: HandlerType<{
-	pathParameters: {
-		productId: string;
-	};
-}> = async (event) => {
+const getProductsById: HandlerType<FromSchema<typeof inputSchema>> = async (
+	event
+) => {
 	const { productId } = event.pathParameters;
 
 	const client = new Client(DB_Config);
 	await client.connect();
 
 	try {
-		const { rows: product } = await client.query(
+		const {
+			rows: [product],
+		} = await client.query(
 			`SELECT product.id, product.title, product.description, product.price, stock.count
 			FROM product, stock
 			WHERE product.id=$1 AND product.id = stock.product_id`,
@@ -46,4 +48,4 @@ const getProductsById: HandlerType<{
 	}
 };
 
-export const main = middyfy(getProductsById);
+export const main = middyfy(getProductsById, inputSchema);
