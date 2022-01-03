@@ -1,43 +1,48 @@
+import { Client } from "pg";
 import { formatJSONResponse, formatErrorResponse } from "@libs/apiGateway";
 import { middyfy } from "@libs/lambda";
-import { ValidatedEventAPIGatewayProxyEvent } from "@libs/types";
 
-import { client } from "src/database/client";
-import schema from "../schema";
+import { HandlerType } from "src/types";
+import { DB_Config } from "src/database/config";
 
-const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof schema> =
-	async (event) => {
-		const { productId } = event.pathParameters;
-		await client.connect();
+const getProductsById: HandlerType<{
+	pathParameters: {
+		productId: string;
+	};
+}> = async (event) => {
+	const { productId } = event.pathParameters;
 
-		try {
-			const product = await client.query(
-				`SELECT product.id, product.title, product.description, product.price, stock.count
+	const client = new Client(DB_Config);
+	await client.connect();
+
+	try {
+		const { rows: product } = await client.query(
+			`SELECT product.id, product.title, product.description, product.price, stock.count
 				FROM product, stock
 					WHERE product.id='${productId}' AND product.id = stock.product_id`
-			);
+		);
 
-			if (product) {
-				return formatJSONResponse({
-					data: product.rows,
-				});
-			}
-
-			return formatErrorResponse({
-				errorMessage: "Product not found",
-				statusCode: 404,
+		if (product) {
+			return formatJSONResponse({
+				data: product,
 			});
-		} catch (error) {
-			const errorMessage = `Something went wrong when looking for product: ${productId}`;
-			console.error(errorMessage, error);
-
-			return formatErrorResponse({
-				errorMessage,
-				statusCode: 500,
-			});
-		} finally {
-			client.end();
 		}
-	};
+
+		return formatErrorResponse({
+			errorMessage: "Product not found",
+			statusCode: 404,
+		});
+	} catch (error) {
+		const errorMessage = `Something went wrong when looking for product: ${productId}`;
+		console.error(errorMessage, error);
+
+		return formatErrorResponse({
+			errorMessage,
+			statusCode: 500,
+		});
+	} finally {
+		client.end();
+	}
+};
 
 export const main = middyfy(getProductsById);

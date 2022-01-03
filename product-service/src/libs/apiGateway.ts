@@ -1,4 +1,4 @@
-import { ErrorResponse, Response } from "./types";
+import { ErrorResponse, Response } from "../types";
 
 export const formatJSONResponse = (response: Response) => {
 	return {
