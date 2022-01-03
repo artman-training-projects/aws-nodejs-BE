@@ -9,14 +9,20 @@ export const logger = (): middy.MiddlewareObj<
 		APIGatewayProxyEvent,
 		APIGatewayProxyResult
 	> = async (request) => {
-		console.log("REQUEST", request);
+		console.log("REQUEST", {
+			pathParameters: request.event.pathParameters,
+			body: request.event.body,
+		});
 	};
 
 	const after: middy.MiddlewareFn<
 		APIGatewayProxyEvent,
 		APIGatewayProxyResult
 	> = async (response) => {
-		console.log("RESPONSE", response);
+		console.log("RESPONSE", {
+			statusCode: response.response.statusCode,
+			body: response.response.body,
+		});
 	};
 
 	return { before, after };

@@ -27,12 +27,12 @@ const getProductsList: HandlerType<{}> = async () => {
 			statusCode: 404,
 		});
 	} catch (error) {
-		const errorMessage = "Something went wrong when get all products";
+		const errorMessage = "Something went wrong when looking for products";
 		console.error(errorMessage, error);
 
 		return formatErrorResponse({
 			errorMessage,
-			statusCode: 400,
+			statusCode: 500,
 		});
 	} finally {
 		client.end();
