@@ -1,25 +1,24 @@
-import { Client } from "pg";
-import { formatJSONResponse, formatErrorResponse } from "@libs/apiGateway";
-import { middyfy } from "@libs/lambda";
 import type { FromSchema } from "json-schema-to-ts";
+import { formatJSONResponse } from "@libs/apiGateway";
+import { middyfy } from "@libs/lambda";
 
 import { HandlerType } from "src/types";
-import { DB_Config } from "src/database/config";
 import { inputSchema } from "./schema";
 
 const addProduct: HandlerType<FromSchema<typeof inputSchema>> = async (
-	event
+	event,
+	context
 ) => {
+	context.callbackWaitsForEmptyEventLoop = false;
+	const { dbClient } = context.clientContext.Custom;
 	const { title, description, price, count } = event.body;
 
-	const client = new Client(DB_Config);
-	await client.connect();
-	await client.query("BEGIN;");
+	await dbClient.query("BEGIN;");
 
 	try {
 		const {
 			rows: [product],
-		} = await client.query(
+		} = await dbClient.query(
 			`INSERT INTO product (title, description, price) VALUES
 			('${title}', '${description}', '${price}')
 			RETURNING id, title, description, price`
@@ -27,27 +26,23 @@ const addProduct: HandlerType<FromSchema<typeof inputSchema>> = async (
 
 		const {
 			rows: [stock],
-		} = await client.query(
+		} = await dbClient.query(
 			`INSERT INTO stock (product_id, count) VALUES
 			('${product.id}', '${count}')
 			RETURNING count`
 		);
 
-		await client.query("ROLLBACK;");
+		await dbClient.query("COMMIT;");
 		return formatJSONResponse({
 			data: { ...product, ...stock },
 		});
 	} catch (error) {
-		await client.query("ROLLBACK;");
-		const errorMessage = `Something went wrong with DB, rollback transaction`;
-		console.error(errorMessage, error);
+		await dbClient.query("ROLLBACK;");
 
-		return formatErrorResponse({
-			errorMessage,
+		return formatJSONResponse({
 			statusCode: 500,
+			errorMessage: "Something went wrong with DB, rollback transaction",
 		});
-	} finally {
-		client.end();
 	}
 };
 

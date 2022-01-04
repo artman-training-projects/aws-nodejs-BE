@@ -1,7 +1,8 @@
 import middy from "@middy/core";
-import { createError } from "@middy/util";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import Ajv from "ajv";
+
+import { formatJSONResponse } from "@libs/apiGateway";
 
 export const validator = (
 	inputSchema
@@ -17,7 +18,10 @@ export const validator = (
 		const valid = validate(request.event);
 
 		if (!valid) {
-			throw createError(400, JSON.stringify(validate.errors, null, 2));
+			return formatJSONResponse({
+				statusCode: 400,
+				data: validate.errors,
+			});
 		}
 	};
 

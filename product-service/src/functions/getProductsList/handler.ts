@@ -1,41 +1,26 @@
-import { Client } from "pg";
-import { formatJSONResponse, formatErrorResponse } from "@libs/apiGateway";
+import { formatJSONResponse } from "@libs/apiGateway";
 import { middyfy } from "@libs/lambda";
-
 import { HandlerType } from "src/types";
-import { DB_Config } from "src/database/config";
 
-const getProductsList: HandlerType<{}> = async () => {
-	const client = new Client(DB_Config);
-	await client.connect();
+const getProductsList: HandlerType<{}> = async (_, context) => {
+	context.callbackWaitsForEmptyEventLoop = false;
+	const { dbClient } = context.clientContext.Custom;
 
 	try {
-		const { rows: allProducts } = await client.query(
+		const { rows: allProducts } = await dbClient.query(
 			`SELECT product.id, product.title, product.description, product.price, stock.count
-				FROM product, stock
-					WHERE product.id = stock.product_id`
+			FROM product, stock
+			WHERE product.id = stock.product_id`
 		);
 
-		if (allProducts) {
-			return formatJSONResponse({
-				data: allProducts,
-			});
-		}
-
-		return formatErrorResponse({
-			errorMessage: "Products not found",
+		return formatJSONResponse({
+			data: allProducts,
+		});
+	} catch {
+		return formatJSONResponse({
 			statusCode: 404,
+			data: `Products not found`,
 		});
-	} catch (error) {
-		const errorMessage = "Something went wrong when looking for products";
-		console.error(errorMessage, error);
-
-		return formatErrorResponse({
-			errorMessage,
-			statusCode: 500,
-		});
-	} finally {
-		client.end();
 	}
 };
 

@@ -18,12 +18,22 @@ export const logger = (): middy.MiddlewareObj<
 	const after: middy.MiddlewareFn<
 		APIGatewayProxyEvent,
 		APIGatewayProxyResult
-	> = async (response) => {
+	> = async (request) => {
 		console.log("RESPONSE", {
-			statusCode: response.response.statusCode,
-			body: response.response.body,
+			statusCode: request.response.statusCode,
+			body: request.response.body,
 		});
 	};
 
-	return { before, after };
+	const onError: middy.MiddlewareFn<
+		APIGatewayProxyEvent,
+		APIGatewayProxyResult
+	> = async (request) => [
+		console.error("ERROR", {
+			statusCode: request.response.statusCode,
+			error: request.error,
+		}),
+	];
+
+	return { before, after, onError };
 };
