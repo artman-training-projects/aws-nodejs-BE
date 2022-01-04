@@ -8,12 +8,3 @@ export type HandlerType<EventParam> = Handler<
 	APIGatewayProxyEvent & EventParam,
 	APIGatewayProxyResult
 >;
-
-export interface Response {
-	[key: string]: unknown;
-}
-
-export interface ErrorResponse {
-	statusCode: number;
-	errorMessage: string;
-}
