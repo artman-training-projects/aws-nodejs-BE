@@ -1,3 +1,5 @@
+import { productSchema } from "@functions/schema";
+
 export const inputSchema = {
 	type: "object",
 	properties: {
@@ -12,3 +14,5 @@ export const inputSchema = {
 		},
 	},
 } as const;
+
+export const outputSchema = productSchema;

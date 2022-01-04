@@ -8,10 +8,9 @@
 		"removeComments": true,
 		"sourceMap": true,
 		"target": "ES2020",
-		"outDir": "lib",
-		"experimentalDecorators": true
+		"outDir": "lib"
 	},
-	"include": ["src/**/*.ts", "serverless.ts"],
+	"include": ["src/**/*.ts", "serverless.ts", "documentation.ts"],
 	"exclude": [
 		"node_modules/**/*",
 		".serverless/**/*",
