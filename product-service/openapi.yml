@@ -1,0 +1,88 @@
+openapi: 3.0.0
+components:
+  schemas:
+    ProductSchema:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        count:
+          type: number
+    ProductListSchema:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          title:
+            type: string
+          description:
+            type: string
+          price:
+            type: number
+          count:
+            type: number
+    ErrorResponse: {}
+  securitySchemes: {}
+info:
+  title: Books Shop API
+  description: Books Shop API documentation
+  version: '1'
+paths:
+  /products:
+    get:
+      operationId: getProductsList
+      summary: Get all products
+      responses:
+        '200':
+          description: Status 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListSchema'
+        '404':
+          description: Status 404 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      operationId: addProduct
+      summary: Add product
+      responses:
+        '200':
+          description: Status 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSchema'
+        '500':
+          description: Status 500 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/products/{productId}':
+    get:
+      operationId: getProductsById
+      summary: Get product by Id
+      responses:
+        '200':
+          description: Status 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSchema'
+        '404':
+          description: Status 404 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

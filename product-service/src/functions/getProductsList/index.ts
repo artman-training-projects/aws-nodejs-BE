@@ -7,6 +7,23 @@ export default {
 			http: {
 				method: "get",
 				path: "products",
+				documentation: {
+					summary: "Get all products",
+					methodResponses: [
+						{
+							statusCode: 200,
+							responseModels: {
+								"application/json": "ProductListSchema",
+							},
+						},
+						{
+							statusCode: 404,
+							responseModels: {
+								"application/json": "ErrorResponse",
+							},
+						},
+					],
+				},
 			},
 		},
 	],

@@ -63,30 +63,33 @@ The project code base is mainly located within the `src` folder. This folder is 
 ```
 .
 ├── src
+│   ├── types.ts                # Types
+│   ├── database                # Database
+|   │   ├── config.ts           # Database config
+|   │   └── init.sql            # SQL query for init database
+│   │
 │   ├── functions               # Lambda configuration and source code folder
 │   │   ├── *
-│   │   │   ├── handler.ts      # lambda source code
-│   │   │   └── index.ts        # lambda Serverless configuration
+│   │   │   ├── handler.ts      # Lambda source code
+│   │   │   ├── index.ts        # Lambda Serverless configuration
+│   │   │   └── schema.ts       # Lambda input/output event JSON-Schema
 │   │   │
-│   │   └── index.ts            # Import/export of all lambda configurations
-│   │   └── schema.ts           # product lambda input event JSON-Schema
+│   │   ├── index.ts            # Re-export all lambdas
+│   │   └── schema.ts           # Product JSON-Schema
 |   |
-│   ├── database               # database
-|   │   └── index.ts           # export database method
-|   │   └── product.model.ts   # product model
-|   │   └── products.mock.ts   # product mock
-│   │
 │   └── libs                    # Lambda shared code
-│       └── apiGateway.ts       # API Gateway specific helpers
-│       └── handlerResolver.ts  # Sharable library for resolving lambda handlers
-│       └── lambda.ts           # Lambda middleware
-|       └── types.ts            # types
+│       ├── apiGateway.ts       # API Gateway specific helpers
+│       ├── handlerResolver.ts  # Sharable library for resolving lambda handlers
+│       ├── lambda.ts           # Lambda middleware
+│       └── middleware
+│           └── *               # Custom middlewares
 │
 ├── package.json
 ├── serverless.ts               # Serverless service file
+├── openapi.yml                 # Generated openapi documentation
+├── documentation.ts            # Openapi documentation generation configuration
 ├── tsconfig.json               # Typescript compiler configuration
-├── tsconfig.paths.json         # Typescript paths
-└── webpack.config.js           # Webpack configuration
+└── tsconfig.paths.json         # Typescript paths
 ```
 
 ### 3rd party libraries
