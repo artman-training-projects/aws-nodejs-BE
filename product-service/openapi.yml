@@ -1,7 +1,24 @@
 openapi: 3.0.0
+info:
+  title: Books Shop API
+  description: Books Shop API documentation
+  version: "1"
+
+servers:
+  - url: https://3qbxi9uzmg.execute-api.eu-west-1.amazonaws.com/dev/products
+    description: Get all products.
+  - url: https://3qbxi9uzmg.execute-api.eu-west-1.amazonaws.com/dev/products/{productId}
+    description: Get product by Id.
+    variables:
+      productId:
+        default: 49a3ae5b-7054-44db-a681-6e869698b0ea
+        description: productId for search
+  - url: https://3qbxi9uzmg.execute-api.eu-west-1.amazonaws.com/dev/products
+    description: Add new product.
+
 components:
   schemas:
-    ProductSchema:
+    Product:
       type: object
       properties:
         id:
@@ -14,75 +31,85 @@ components:
           type: number
         count:
           type: number
-    ProductListSchema:
+
+    AddProduct:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        count:
+          type: number
+
+    ProductList:
       type: array
       items:
-        type: object
-        properties:
-          id:
-            type: string
-          title:
-            type: string
-          description:
-            type: string
-          price:
-            type: number
-          count:
-            type: number
-    ErrorResponse: {}
-  securitySchemes: {}
-info:
-  title: Books Shop API
-  description: Books Shop API documentation
-  version: '1'
+        $ref: "#/components/schemas/Product"
+
+    ErrorResponse:
+      type: object
+
 paths:
-  /products:
+  "/products":
     get:
-      operationId: getProductsList
       summary: Get all products
       responses:
-        '200':
-          description: Status 200 Response
+        "200":
+          description: Receiv all products
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductListSchema'
-        '404':
+                $ref: "#/components/schemas/ProductList"
+        "404":
           description: Status 404 Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
     put:
-      operationId: addProduct
-      summary: Add product
+      summary: Add new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddProduct"
       responses:
-        '200':
+        "200":
           description: Status 200 Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductSchema'
-        '500':
+                $ref: "#/components/schemas/Product"
+        "500":
           description: Status 500 Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  '/products/{productId}':
+                $ref: "#/components/schemas/ErrorResponse"
+
+  "/products/{productId}":
     get:
-      operationId: getProductsById
       summary: Get product by Id
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: Status 200 Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductSchema'
-        '404':
+                $ref: "#/components/schemas/Product"
+        "404":
           description: Status 404 Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"

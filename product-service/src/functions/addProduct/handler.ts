@@ -20,16 +20,18 @@ const addProduct: HandlerType<FromSchema<typeof inputSchema>> = async (
 			rows: [product],
 		} = await dbClient.query(
 			`INSERT INTO product (title, description, price) VALUES
-			('${title}', '${description}', '${price}')
-			RETURNING id, title, description, price`
+			($1, $2, $3)
+			RETURNING id, title, description, price`,
+			[title, description, price]
 		);
 
 		const {
 			rows: [stock],
 		} = await dbClient.query(
 			`INSERT INTO stock (product_id, count) VALUES
-			('${product.id}', '${count}')
-			RETURNING count`
+			($1, $2)
+			RETURNING count`,
+			[product.id, count]
 		);
 
 		await dbClient.query("COMMIT;");
