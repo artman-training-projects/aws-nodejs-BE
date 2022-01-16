@@ -1,12 +1,12 @@
 import type { AWS } from "@serverless/typescript";
 
-import { getProductsList, getProductsById, addProduct } from "@functions/index";
-import { mainEnv, databaseEnv } from "../.env";
+import { importProductsFile, importFileParser } from "@functions/index";
+import { mainEnv } from "../.env";
 
-const environment = { ...mainEnv, ...databaseEnv };
+const environment = { ...mainEnv };
 
 const serverlessConfiguration: AWS = {
-	service: "product-service",
+	service: "import-service",
 	frameworkVersion: "2",
 	plugins: ["serverless-esbuild"],
 	provider: {
@@ -20,15 +20,14 @@ const serverlessConfiguration: AWS = {
 		environment,
 		lambdaHashingVersion: "20201221",
 	},
-	functions: { getProductsList, getProductsById, addProduct },
+	functions: { importProductsFile, importFileParser },
 	package: { individually: true },
-	configValidationMode: "off",
 	custom: {
 		esbuild: {
 			bundle: true,
 			minify: true,
 			sourcemap: true,
-			exclude: ["aws-sdk", "pg-native"],
+			exclude: ["aws-sdk"],
 			target: "node14",
 			define: { "require.resolve": undefined },
 			platform: "node",
