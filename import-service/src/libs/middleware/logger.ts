@@ -1,17 +1,22 @@
 import middy from "@middy/core";
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import {
+	APIGatewayProxyEvent,
+	APIGatewayProxyResult,
+	S3Event,
+} from "aws-lambda";
 
 export const logger = (): middy.MiddlewareObj<
 	APIGatewayProxyEvent,
 	APIGatewayProxyResult
 > => {
 	const before: middy.MiddlewareFn<
-		APIGatewayProxyEvent,
+		APIGatewayProxyEvent & S3Event,
 		APIGatewayProxyResult
 	> = async (request) => {
 		console.log("REQUEST", {
-			pathParameters: request.event.pathParameters,
+			queryStringParameters: request.event.queryStringParameters,
 			body: request.event.body,
+			records: request.event.Records,
 		});
 	};
 
