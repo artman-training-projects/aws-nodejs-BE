@@ -1,7 +1,7 @@
 import type { AWS } from "@serverless/typescript";
 
 import { getProductsList, getProductsById, addProduct } from "@functions/index";
-import { mainEnv, databaseEnv } from "../.env";
+import { mainEnv, databaseEnv, aws } from "../.env";
 
 const environment = { ...mainEnv, ...databaseEnv };
 
@@ -12,7 +12,7 @@ const serverlessConfiguration: AWS = {
 	provider: {
 		name: "aws",
 		runtime: "nodejs14.x",
-		region: "eu-west-1",
+		region: aws.REGION,
 		apiGateway: {
 			minimumCompressionSize: 1024,
 			shouldStartNameWithService: true,
