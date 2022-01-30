@@ -37,6 +37,8 @@ export const dbConnection = (): middy.MiddlewareObj<
 		APIGatewayProxyEvent,
 		APIGatewayProxyResult
 	> = async (request) => {
+		const { dbClient } = request.context.clientContext.Custom;
+		dbClient.end();
 		throw createError(500, `Something went wrong with DB`, request.error);
 	};
 
