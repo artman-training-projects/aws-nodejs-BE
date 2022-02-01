@@ -3,7 +3,14 @@ import middy from "@middy/core";
 import { createError } from "@middy/util";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 
-import { DB_Config } from "src/database/config";
+const DB_Config = {
+	host: process.env.PG_HOST,
+	port: process.env.PG_PORT,
+	database: process.env.PG_NAME,
+	user: process.env.PG_USER,
+	password: process.env.PG_PASS,
+	connectionTimeoutMillis: 5000,
+};
 
 export const dbConnection = (): middy.MiddlewareObj<
 	APIGatewayProxyEvent,

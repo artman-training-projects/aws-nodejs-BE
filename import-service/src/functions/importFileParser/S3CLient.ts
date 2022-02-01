@@ -10,25 +10,26 @@ import csvParser from "csv-parser";
 import { Stream } from "stream";
 import { promisify } from "util";
 
-import { aws } from "../../../../.env";
+const awsRegion = process.env.REGION;
+const awsS3 = process.env.S3;
 
 export const S3ClientProcessing = async (eventObjectKey: string) => {
-	const clientS3 = new S3Client({ region: aws.REGION });
-	const clientSQS = new SQSClient({ region: aws.REGION });
+	const clientS3 = new S3Client({ region: awsRegion });
+	const clientSQS = new SQSClient({ region: awsRegion });
 
 	const getCommand = new GetObjectCommand({
-		Bucket: aws.S3,
+		Bucket: awsS3,
 		Key: eventObjectKey,
 	});
 
 	const copyCommand = new CopyObjectCommand({
-		Bucket: aws.S3,
+		Bucket: awsS3,
 		Key: eventObjectKey.replace("uploaded/", "parsed/"),
-		CopySource: `${aws.S3}/${eventObjectKey}`,
+		CopySource: `${awsS3}/${eventObjectKey}`,
 	});
 
 	const deleteCommand = new DeleteObjectCommand({
-		Bucket: aws.S3,
+		Bucket: awsS3,
 		Key: eventObjectKey,
 	});
 
@@ -55,8 +56,8 @@ export const S3ClientProcessing = async (eventObjectKey: string) => {
 
 	try {
 		const { Body } = await clientS3.send(getCommand);
-
 		const pipeline = promisify(Stream.pipeline);
+
 		await pipeline(Body, csvParser(), logger, toSQS);
 
 		await clientS3.send(copyCommand);

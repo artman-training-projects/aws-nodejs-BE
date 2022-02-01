@@ -5,9 +5,9 @@ import {
 	importFileParser,
 	catalogBatchProcess,
 } from "@functions/index";
-import { mainEnv, databaseEnv, aws } from "../.env";
+import { mainEnv, databaseEnv, aws, awsResources } from "../.env";
 
-const environment = { ...mainEnv, ...databaseEnv };
+const environment = { ...mainEnv, ...databaseEnv, ...aws };
 
 const serverlessConfiguration: AWS = {
 	service: "import-service",
@@ -15,25 +15,25 @@ const serverlessConfiguration: AWS = {
 	plugins: ["serverless-esbuild"],
 	resources: {
 		Resources: {
-			SQSQueue: {
+			[awsResources.SQS.serviceName]: {
 				Type: "AWS::SQS::Queue",
 				Properties: {
-					QueueName: aws.SQS,
+					QueueName: awsResources.SQS.queueName,
 				},
 			},
-			SNSTopic: {
+			[awsResources.SNS.serviceName]: {
 				Type: "AWS::SNS::Topic",
 				Properties: {
-					TopicName: aws.SNS,
+					TopicName: awsResources.SNS.topicName,
 				},
 			},
-			SNSSubscription: {
+			[awsResources.SNS.subscription]: {
 				Type: "AWS::SNS::Subscription",
 				Properties: {
-					Endpoint: aws.SNS_Email,
+					Endpoint: awsResources.SNS.email,
 					Protocol: "email",
 					TopicArn: {
-						Ref: "SNSTopic",
+						Ref: awsResources.SNS.serviceName,
 					},
 				},
 			},
@@ -50,10 +50,10 @@ const serverlessConfiguration: AWS = {
 		environment: {
 			...environment,
 			SQS_URL: {
-				Ref: "SQSQueue",
+				Ref: awsResources.SQS.serviceName,
 			},
 			SNS_ARN: {
-				Ref: "SNSTopic",
+				Ref: awsResources.SNS.serviceName,
 			},
 		},
 		lambdaHashingVersion: "20201221",
@@ -72,14 +72,14 @@ const serverlessConfiguration: AWS = {
 				Effect: "Allow",
 				Action: "sqs:*",
 				Resource: [
-					`arn:aws:sqs:${aws.REGION}:${aws.ACCOUNT}:${aws.SQS}`,
+					`arn:aws:sqs:${aws.REGION}:${aws.ACCOUNT}:${awsResources.SQS.queueName}`,
 				],
 			},
 			{
 				Effect: "Allow",
 				Action: "sns:*",
 				Resource: [
-					`arn:aws:sns:${aws.REGION}:${aws.ACCOUNT}:${aws.SNS}`,
+					`arn:aws:sns:${aws.REGION}:${aws.ACCOUNT}:${awsResources.SNS.topicName}`,
 				],
 			},
 		],

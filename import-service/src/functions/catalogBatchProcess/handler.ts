@@ -3,11 +3,10 @@ import { Handler, SQSEvent } from "aws-lambda";
 
 import { formatJSONResponse } from "@libs/apiGateway";
 import { middyfy } from "@libs/lambda";
-import { aws } from "../../../../.env";
 
 const catalogBatchProcess: Handler<SQSEvent> = async (event, context) => {
 	const { dbClient } = context.clientContext.Custom;
-	const clientSNS = new SNSClient({ region: aws.REGION });
+	const clientSNS = new SNSClient({ region: process.env.REGION });
 
 	const products = event.Records.map(({ body }) => {
 		const { title, description, price, count } = JSON.parse(body);
@@ -48,6 +47,7 @@ const catalogBatchProcess: Handler<SQSEvent> = async (event, context) => {
 			Subject: "Upload new products",
 			Message: JSON.stringify(uploadedProducts, null, 2),
 		});
+
 		await clientSNS.send(message);
 
 		return formatJSONResponse({
