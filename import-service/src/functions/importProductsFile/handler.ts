@@ -6,17 +6,16 @@ import { formatJSONResponse } from "@libs/apiGateway";
 import { middyfy } from "@libs/lambda";
 import { HandlerType } from "src/types";
 import { inputSchema } from "./schema";
-import { aws } from "../../../../.env";
 
 const importProductsFile: HandlerType<FromSchema<typeof inputSchema>> = async (
 	event
 ) => {
 	const { name } = event.queryStringParameters;
 
-	const client = new S3Client({ region: aws.REGION });
+	const client = new S3Client({ region: process.env.REGION });
 
 	const putCommand = new PutObjectCommand({
-		Bucket: aws.S3,
+		Bucket: process.env.S3,
 		Key: `uploaded/${name}`,
 		ContentType: "text/csv",
 	});
